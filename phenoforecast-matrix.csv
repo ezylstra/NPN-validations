@@ -1,0 +1,15 @@
+species,complete,species_id,phenophase,npn_phenophase,gdd_type,gdd_start,gdd_base,gdd_upper_threshold,pred_lower_bound,pred_upper_bound
+apple maggot,yes,1795,adult emergence,Adults,simple average,1-Mar,50,NULL,900,2000
+Asian longhorned beetle,yes,1791,adult emergence,Adults,double-sine,1-Jan,50,86,690,
+bronze birch borer,yes,1789,adult emergence,Adults,double-sine,1-Jan,50,86,450,700
+eastern tent caterpillar,yes,259,active caterpillars,Caterpillars,simple average,1-Mar,50,NULL,90,190
+emerald ash borer,yes,1790,adult emergence,Adults,single triangle,1-Jan,54,97,391,900
+evergreen bagworm moth,yes,1794,caterpillar emergence,Caterpillars,simple average,1-Mar,50,NULL,600,900
+spongy moth,yes,1792,caterpillar emergence,Caterpillars,double-sine,1-Jan,37.5,86,571,1300
+hemlock woolly adelgid,yes,1700,eggs,Eggs,simple average,1-Jan,32,NULL,26,1000
+hemlock woolly adelgid,yes,1700,nymphs,Crawlers,simple average,1-Jan,32,NULL,1001,2200
+lilac borer,yes,1243,adult emergence,Adults,double-sine,1-Jan,50,86,500,1300
+magnolia scale,yes,1797,crawler emergence,Crawlers,double-sine,1-Jan,50,86,1938,
+pine needle scale,yes,1239,crawler emergence,Crawlers,simple average,1-Mar,50,NULL,299,448
+spotted lanternfly,yes,1796,egg hatch,Nymphs,single triangle,1-Jan,50,86,365,
+spotted lanternfly,yes,1796,adult emergence,Adults,single triangle,1-Jan,50,86,1935,
