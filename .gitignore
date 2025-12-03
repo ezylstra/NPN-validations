@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# Rasters with PRISM temperature data
+PRISM*
+!PRISM/.gitkeep
