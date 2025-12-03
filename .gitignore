@@ -3,6 +3,6 @@
 .RData
 .Ruserdata
 
-# Rasters with PRISM temperature data
-PRISM*
+# Ignore contents of PRISM folder
+PRISM/*
 !PRISM/.gitkeep
