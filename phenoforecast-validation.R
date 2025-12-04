@@ -70,7 +70,9 @@ pf <- pf %>%
          n_correct = NA,
          accuracy = NA, # true pos + true neg / n
          n_pred1_obs0 = NA, # false positive
-         n_pred0_obs1 = NA) # false negative
+         n_pred0_obs1 = NA, # false negative
+         n_pred0_obs0 = NA, # correct: negative
+         n_pred1_obs1 = NA) # correct: positive
 
 # Loop through each phenoforecast
 for (i in 1:nrow(pf)) {
@@ -171,9 +173,11 @@ for (i in 1:nrow(pf)) {
     left_join(select(minmax_all, site_id, obsdate, agdd),
               by = c("site_id", "obsdate"))
   # Remove observations in last few days (that won't have AGDD values)
-  last_temp_day <- ymd(str_remove(last(names(tmin)), "tmin_"))
+  # last_temp_day <- ymd(str_remove(last(names(tmin)), "tmin_"))
+  # obs <- obs %>%
+  #   filter(obsdate <= last_temp_day)
   obs <- obs %>%
-    filter(obsdate <= last_temp_day)
+    filter(!is.na(agdd))
 
   # Predict whether species-phenophase should be present based on GDD model
   obs <- obs %>%
