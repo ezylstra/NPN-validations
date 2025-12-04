@@ -15,8 +15,10 @@ library(rnpn)
 library(lubridate)
 library(stringr)
 library(dplyr)
+library(tidyr)
 library(terra)
 library(degday)
+library(ggplot2)
 
 # Today
 today <- Sys.Date()
@@ -183,18 +185,81 @@ for (i in 1:nrow(pf)) {
   obs <- obs %>%
     mutate(correct = ifelse(phenophase_status == pred, 1, 0),
            pred1_obs0 = ifelse(pred == 1 & phenophase_status == 0, 1, 0),
-           pred0_obs1 = ifelse(pred == 0 & phenophase_status == 1, 1, 0))
+           pred0_obs1 = ifelse(pred == 0 & phenophase_status == 1, 1, 0),
+           pred0_obs0 = ifelse(pred == 0 & phenophase_status == 0, 1, 0),
+           pred1_obs1 = ifelse(pred == 1 & phenophase_status == 1, 1, 0))
   
   # Calculate accuracy rate, number of false positives/negatives and add
   # to phenoforecast dataframe
   pf$n_obs[i] <- nrow(obs)
   pf$n_positive[i] <- sum(obs$phenophase_status)
-  pf$n_correct[i] <- sum(obs$correct)
+  pf$n_pred0_obs0[i] <- sum(obs$pred0_obs0)
+  pf$n_pred1_obs1[i] <- sum(obs$pred1_obs1)
   pf$n_pred1_obs0[i] <- sum(obs$pred1_obs0)
   pf$n_pred0_obs1[i] <- sum(obs$pred0_obs1)
 }
 
 pf <- pf %>%
+  mutate(n_correct = n_pred0_obs0 + n_pred1_obs1) %>%
   mutate(accuracy = round(n_correct/n_obs, 4))
 
-pf
+# Write to file
+write.csv(pf, 
+          paste0("output/phenoforecast-validation-", yr, ".csv"),
+          row.names = FALSE)
+
+# Create bar graph
+pf_fig <- pf %>%
+  filter(n_obs > 0) %>%
+  select(species, phenophase, n_obs, n_positive, n_correct, accuracy,
+         n_pred1_obs0, n_pred0_obs1, n_pred0_obs0, n_pred1_obs1) %>%
+  mutate(group = paste0(species, ": ", phenophase)) %>%
+  arrange(desc(n_obs), desc(n_correct))
+group_in_order <- pf_fig$group
+
+pf_figl <- pf_fig %>%
+  select(group, accuracy, contains("n_pred")) %>%
+  pivot_longer(cols = contains("n_pred"),
+               names_to = "type",
+               values_to = "count") %>%
+  mutate(group = factor(group, levels = group_in_order)) %>%
+  mutate(type = factor(type,
+                       levels = c("n_pred0_obs1",
+                                  "n_pred1_obs0",
+                                  "n_pred1_obs1",
+                                  "n_pred0_obs0")))
+
+pf_summaries <- pf_figl %>%
+  group_by(group) %>%
+  summarize(accuracy = round(accuracy[1] *100),
+            total_count = sum(count)) %>%
+  mutate(acc_label = paste0(accuracy, "%"),
+         y = total_count + 10)
+
+barchart <- ggplot(pf_figl, aes(x = group, y = count, fill = type)) + 
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("gray60", "orange",
+                               "forestgreen", "steelblue2"),
+                    labels = c("Predicted no, reported yes",
+                               "Predicted yes, reported no",
+                               "Predicted and reported yes",
+                               "Predicted and reported no")) +
+  geom_text(data = pf_summaries, 
+            aes(x = group, y = y, label = acc_label, fill = NULL), 
+            vjust = 0, hjust = 0.50, size = 9/.pt) +
+  labs(y = "Count") +
+  theme_bw() +
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.85, 0.8),
+        legend.title = element_blank(),
+        panel.grid = element_blank(),
+        # axis.text.x = element_text(angle = 45, hjust=1),
+        axis.title.x = element_blank()) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+
+ggsave("output/phenoforecast-validation-2025-fig.png",
+       barchart,
+       dpi = 600,
+       width = 10,
+       height = 5,
+       units = "in")
