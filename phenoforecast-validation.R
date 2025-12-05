@@ -2,8 +2,7 @@
 # with Nature's Notebook observations?
 # 4 Dec 2025
 
-# This script is based in large part on previous work done by T. Crimmins and 
-# M. Crimmins.
+# This script is based in large part on previous work done by T. Crimmins.
 
 # Steps: 
 # Download status observations for each species and phenophase
@@ -77,7 +76,7 @@ pf <- pf %>%
 # Loop through each phenoforecast
 for (i in 1:nrow(pf)) {
   
-  cat("Evaluating data for", pf$species[i], " ", str_to_lower(pf$np_phenophase[i]))
+  cat("Evaluating data for", pf$species[i], " ", str_to_lower(pf$npn_phenophase[i]))
 
   # Download observations 
   obs <- npn_download_status_data(
