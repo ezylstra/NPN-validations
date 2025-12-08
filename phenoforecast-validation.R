@@ -1,6 +1,6 @@
 # Validating PhenoForecasts: How well do PhenoForecast model predictions line up
 # with Nature's Notebook observations?
-# 4 Dec 2025
+# 8 Dec 2025
 
 # This script is based in large part on previous work done by T. Crimmins.
 
@@ -76,7 +76,8 @@ pf <- pf %>%
 # Loop through each phenoforecast
 for (i in 1:nrow(pf)) {
   
-  cat("Evaluating data for", pf$species[i], " ", str_to_lower(pf$npn_phenophase[i]))
+  cat(paste0("Evaluating data for", pf$species[i], ", ", 
+             str_to_lower(pf$npn_phenophase[i])))
 
   # Download observations 
   obs <- npn_download_status_data(
@@ -151,15 +152,22 @@ for (i in 1:nrow(pf)) {
   # Loop through sites and calculate daily AGDD values
   for (j in 1:nrow(locs)) {
     minmax <- filter(tminmax, site_id == locs$site_id[j])
-    agdd <- dd_calc(
+    # Calculate daily GDD values for each day in year
+    gdd <- dd_calc(
       daily_min = minmax$tmin,
       daily_max = minmax$tmax,
       thresh_low = pf$gdd_base[i],
       thresh_up = pf$gdd_upper_threshold[i], # NA and NULL produce same results
       method = pf$dd_method[i],
-      cumulative = TRUE
+      cumulative = FALSE
     )
-    minmax$agdd <- agdd
+    minmax$gdd <- gdd
+    # Calculate AGDD values from accumulation start date onwards
+    minmax <- minmax %>%
+      mutate(agdd_working = ifelse(obsdate < pf$gdd_start[i], 0, gdd)) %>%
+      mutate(agdd = cumsum(agdd_working)) %>%
+      select(-agdd_working)
+    
     if (j == 1) {
       minmax_all <- minmax
     } else {
