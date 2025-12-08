@@ -1,15 +1,15 @@
 "species","species_id","phenophase","npn_phenophase","gdd_type","gdd_start","gdd_base","gdd_upper_threshold","pred_lower_bound","pred_upper_bound","dd_method","n_obs","n_positive","n_correct","accuracy","n_pred1_obs0","n_pred0_obs1","n_pred0_obs0","n_pred1_obs1"
-"apple maggot",1795,"adult emergence","Adults","simple average",2025-03-01,50,NA,900,2000,"simp_avg",113,0,98,0.8673,15,0,98,0
+"apple maggot",1795,"adult emergence","Adults","simple average",2025-01-01,50,NA,900,2000,"simp_avg",122,0,108,0.8852,14,0,108,0
 "Asian longhorned beetle",1791,"adult emergence","Adults","double-sine",2025-01-01,50,86,690,Inf,"dbl_sine",0,NA,NA,NA,NA,NA,NA,NA
 "bronze birch borer",1789,"adult emergence","Adults","double-sine",2025-01-01,50,86,450,700,"dbl_sine",120,0,119,0.9917,1,0,119,0
-"eastern tent caterpillar",259,"active caterpillars","Caterpillars","simple average",2025-03-01,50,NA,90,190,"simp_avg",503,41,455,0.9046,15,33,447,8
+"eastern tent caterpillar",259,"active caterpillars","Caterpillars","simple average",2025-03-01,50,NA,90,190,"simp_avg",556,41,508,0.9137,15,33,500,8
 "emerald ash borer",1790,"adult emergence","Adults","single triangle",2025-01-01,54,97,391,900,"sng_tri",257,2,236,0.9183,20,1,235,1
-"evergreen bagworm moth",1794,"caterpillar emergence","Caterpillars","simple average",2025-03-01,50,NA,600,900,"simp_avg",111,0,110,0.991,1,0,110,0
+"evergreen bagworm moth",1794,"caterpillar emergence","Caterpillars","simple average",2025-03-01,50,NA,600,900,"simp_avg",124,0,123,0.9919,1,0,123,0
 "spongy moth",1792,"caterpillar emergence","Caterpillars","double-sine",2025-01-01,37.5,86,571,1300,"dbl_sine",0,NA,NA,NA,NA,NA,NA,NA
 "hemlock woolly adelgid",1700,"eggs","Eggs","simple average",2025-01-01,32,NA,26,1000,"simp_avg",237,17,176,0.7426,44,17,176,0
 "hemlock woolly adelgid",1700,"nymphs","Crawlers","simple average",2025-01-01,32,NA,1001,2200,"simp_avg",240,0,226,0.9417,14,0,226,0
 "lilac borer",1243,"adult emergence","Adults","double-sine",2025-01-01,50,86,500,1300,"dbl_sine",122,0,117,0.959,5,0,117,0
 "magnolia scale",1797,"crawler emergence","Crawlers","double-sine",2025-01-01,50,86,1938,Inf,"dbl_sine",122,0,24,0.1967,98,0,24,0
-"pine needle scale",1239,"crawler emergence","Crawlers","simple average",2025-03-01,50,NA,299,448,"simp_avg",113,0,112,0.9912,1,0,112,0
+"pine needle scale",1239,"crawler emergence","Crawlers","simple average",2025-03-01,50,NA,299,448,"simp_avg",122,0,121,0.9918,1,0,121,0
 "spotted lanternfly",1796,"egg hatch","Nymphs","single triangle",2025-01-01,50,86,365,Inf,"sng_tri",43,1,30,0.6977,13,0,29,1
 "spotted lanternfly",1796,"adult emergence","Adults","single triangle",2025-01-01,50,86,1935,Inf,"sng_tri",44,3,36,0.8182,8,0,33,3

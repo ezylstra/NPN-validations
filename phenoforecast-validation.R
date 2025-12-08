@@ -76,7 +76,7 @@ pf <- pf %>%
 # Loop through each phenoforecast
 for (i in 1:nrow(pf)) {
   
-  cat(paste0("Evaluating data for", pf$species[i], ", ", 
+  cat(paste0("Evaluating data for ", pf$species[i], ", ", 
              str_to_lower(pf$npn_phenophase[i])))
 
   # Download observations 
@@ -86,6 +86,9 @@ for (i in 1:nrow(pf)) {
     species_ids = pf$species_id[i]
   ) %>% data.frame()
   
+  # Quick check of data
+  # table(obs$phenophase_description, obs$phenophase_status)
+  
   # If no observations (positive or negative) this year, skip
   if (nrow(obs) == 0) {
     pf$n_obs[i] <- 0
@@ -93,12 +96,13 @@ for (i in 1:nrow(pf)) {
     next
   }
   
-  # Filter for phenophase of interest and start date for GDD accumulations and
-  # remove any unknown status observations (status = -1)
+  # Filter for phenophase of interest and remove any unknown status 
+  # observations (status = -1). Don't need to filter by GDD accumulation start
+  # date because we'll include observations before that date and set AGDD and 
+  # prediction = 0.
   obs <- obs %>%
     mutate(obsdate = ymd(observation_date)) %>%
     filter(phenophase_description == pf$npn_phenophase[i]) %>%
-    filter(obsdate >= pf$gdd_start[i]) %>%
     filter(phenophase_status >= 0)
 
   # If no observations for this phenophase (positive or negative) this year, skip
@@ -162,7 +166,8 @@ for (i in 1:nrow(pf)) {
       cumulative = FALSE
     )
     minmax$gdd <- gdd
-    # Calculate AGDD values from accumulation start date onwards
+    # Calculate AGDD values from accumulation start date onwards (set GDD = 0)
+    # before start date (if not 1 Jan)
     minmax <- minmax %>%
       mutate(agdd_working = ifelse(obsdate < pf$gdd_start[i], 0, gdd)) %>%
       mutate(agdd = cumsum(agdd_working)) %>%
