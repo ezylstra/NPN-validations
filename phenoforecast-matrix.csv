@@ -1,5 +1,5 @@
 species,species_id,phenophase,npn_phenophase,gdd_type,gdd_start,gdd_base,gdd_upper_threshold,pred_lower_bound,pred_upper_bound
-apple maggot,1795,adult emergence,Adults,simple average,1-Mar,50,,900,2000
+apple maggot,1795,adult emergence,Adults,simple average,1-Jan,50,,900,2000
 Asian longhorned beetle,1791,adult emergence,Adults,double-sine,1-Jan,50,86,690,
 bronze birch borer,1789,adult emergence,Adults,double-sine,1-Jan,50,86,450,700
 eastern tent caterpillar,259,active caterpillars,Caterpillars,simple average,1-Mar,50,,90,190
