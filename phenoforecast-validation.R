@@ -1,6 +1,6 @@
 # Validating PhenoForecasts: How well do PhenoForecast model predictions line up
 # with Nature's Notebook observations?
-# 8 Dec 2025
+# 19 Nov 2026
 
 # This script is based in large part on previous work done by T. Crimmins.
 
@@ -75,7 +75,6 @@ pf <- pf %>%
 
 # Loop through each phenoforecast
 for (i in 1:nrow(pf)) {
-  
   cat(paste0("Evaluating data for ", pf$species[i], ", ", 
              str_to_lower(pf$npn_phenophase[i])))
 
@@ -85,7 +84,7 @@ for (i in 1:nrow(pf)) {
     years = yr, 
     species_ids = pf$species_id[i]
   ) %>% data.frame()
-  
+
   # Quick check of data
   # table(obs$phenophase_description, obs$phenophase_status)
   
@@ -94,8 +93,14 @@ for (i in 1:nrow(pf)) {
     pf$n_obs[i] <- 0
     message("There are 0 observations of ", pf$species[i], " in ", yr)
     next
-  }
+  } 
   
+  if (!exists("obs_all")) {
+    obs_all <- obs
+  } else {
+    obs_all <- rbind(obs_all, obs)
+  }
+
   # Filter for phenophase of interest and remove any unknown status 
   # observations (status = -1). Don't need to filter by GDD accumulation start
   # date because we'll include observations before that date and set AGDD and 
@@ -126,7 +131,7 @@ for (i in 1:nrow(pf)) {
     summarize(last_date = max(obsdate), .groups = "keep")
   locsv <- vect(locs, geom = c("longitude", "latitude"), crs = "epsg:4326")
   locsv <- terra::project(locsv, crs(tmin))
-  
+
   # Extract daily min temperatures for each site
   tmins_all <- terra::extract(tmin, locsv, ID = FALSE) %>%
     mutate(site_id = locsv$site_id) %>%
@@ -148,6 +153,29 @@ for (i in 1:nrow(pf)) {
   # Merge min and max temperatures
   tminmax <- left_join(tmins_all, tmaxs_all, by = c("site_id", "obsdate"))
   
+  # Remove any sites that don't have temperature data because they aren't in the 
+  # US (don't have PRISM for other areas) or are missing data
+  tminmax <- tminmax %>%
+    group_by(site_id) %>%
+    mutate(ndates = sum(!is.na(tmin))) %>%
+    ungroup() %>%
+    filter(ndates == length(unique(tmins_all$obsdate))) %>%
+    select(-ndates)
+  locs <- locs %>%
+    filter(site_id %in% unique(tminmax$site_id))
+  obs <- obs %>%
+    filter(site_id %in% unique(tminmax$site_id))
+  
+  # If no observations for this phenophase (positive or negative) this year
+  # with temperature data, skip
+  if (nrow(obs) == 0) {
+    pf$n_obs[i] <- 0
+    message("There are 0 observations of ", pf$species[i], " ",
+            str_to_lower(pf$npn_phenophase[i]), " with temperature data in ",
+            yr)
+    next
+  }
+  
   # Warning if any tmin > tmax 
   if (sum(tminmax$tmin > tminmax$tmax) > 0) {
     warning("One or more dates with tmin > tmax!")
@@ -163,7 +191,8 @@ for (i in 1:nrow(pf)) {
       thresh_low = pf$gdd_base[i],
       thresh_up = pf$gdd_upper_threshold[i], # NA and NULL produce same results
       method = pf$dd_method[i],
-      cumulative = FALSE
+      cumulative = FALSE,
+      quiet = TRUE
     )
     minmax$gdd <- gdd
     # Calculate AGDD values from accumulation start date onwards (set GDD = 0)
@@ -224,6 +253,8 @@ write.csv(pf,
           paste0("output/phenoforecast-validation-", yr, ".csv"),
           row.names = FALSE)
 
+# Can look at any specific status data by inspecting obs_all dataframe
+
 # Create bar graph
 pf_fig <- pf %>%
   filter(n_obs > 0) %>%
@@ -273,7 +304,7 @@ barchart <- ggplot(pf_figl, aes(x = group, y = count, fill = type)) +
         axis.title.x = element_blank()) +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 
-ggsave("output/phenoforecast-validation-2025-fig.png",
+ggsave(paste0("output/phenoforecast-validation-", yr, "-fig.png"),
        barchart,
        dpi = 600,
        width = 10,
