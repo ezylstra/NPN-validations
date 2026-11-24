@@ -1,0 +1,13 @@
+species,species_id,phenophase,npn_php_id,year,climate_source,npn_six_layer
+Red Rothomagensis lilac,35,breaking leaf buds,373,2024,PRISM,lilac_leaf_prism
+Red Rothomagensis lilac,35,breaking leaf buds,373,2025,NCEP,lilac_leaf_ncep
+Red Rothomagensis lilac,35,flowering,205,2024,PRISM,lilac_bloom_prism
+Red Rothomagensis lilac,35,flowering,205,2025,NCEP,lilac_bloom_ncep
+common lilac,36,breaking leaf buds,373,2024,PRISM,lilac_leaf_prism
+common lilac,36,breaking leaf buds,373,2025,NCEP,lilac_leaf_ncep
+common lilac,36,flowering,205,2024,PRISM,lilac_bloom_prism
+common lilac,36,flowering,205,2025,NCEP,lilac_bloom_ncep
+Arnold red honeysuckle,20,breaking leaf buds,373,2024,PRISM,arnoldred_leaf_prism
+Arnold red honeysuckle,20,breaking leaf buds,373,2025,NCEP,arnoldred_leaf_ncep
+Arnold red honeysuckle,20,flowering,210,2024,PRISM,arnoldred_bloom_prism
+Arnold red honeysuckle,20,flowering,210,2025,NCEP,arnoldred_bloom_ncep
